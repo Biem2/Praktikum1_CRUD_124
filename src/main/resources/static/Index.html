@@ -1,353 +1,372 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Manajemen User - Praktikum 1</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    <title>Manajemen User – Praktikum</title>
+    <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <style>
-        .error-message {
-            background-color: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-            padding: 10px;
-            border-radius: 5px;
-            margin-bottom: 15px;
-            display: none;
+        :root {
+          --bg: #0d0f14;
+          --surface: #161920;
+          --surface2: #1e2230;
+          --border: #2a2f42;
+          --accent: #6c8aff;
+          --accent2: #a78bfa;
+          --success: #34d399;
+          --danger: #f87171;
+          --warning: #fbbf24;
+          --text: #e2e8f0;
+          --muted: #64748b;
+          --radius: 12px;
         }
-        .error-message.show {
-            display: block;
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+
+        body {
+          font-family: 'Sora', sans-serif;
+          background: var(--bg);
+          color: var(--text);
+          min-height: 100vh;
+          padding: 2rem 1rem;
         }
+
+        body::before {
+          content: '';
+          position: fixed;
+          top: -200px; left: -200px;
+          width: 600px; height: 600px;
+          background: radial-gradient(circle, rgba(108,138,255,.08) 0%, transparent 70%);
+          pointer-events: none;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; }
+
+        /* Header */
+        .page-header {
+          display: flex; align-items: center; gap: 1rem;
+          margin-bottom: 2rem;
+        }
+        .page-header .icon {
+          width: 48px; height: 48px;
+          background: linear-gradient(135deg, var(--accent), var(--accent2));
+          border-radius: 14px;
+          display: flex; align-items: center; justify-content: center;
+          font-size: 1.4rem;
+        }
+        .page-header h1 {
+          font-size: 1.6rem; font-weight: 700;
+          background: linear-gradient(135deg, var(--text), var(--accent2));
+          -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .page-header p { font-size: .8rem; color: var(--muted); margin-top: 2px; }
+
+        /* Card */
+        .card {
+          background: var(--surface);
+          border: 1px solid var(--border);
+          border-radius: var(--radius);
+          padding: 1.5rem;
+          margin-bottom: 1.5rem;
+        }
+        .card-title {
+          font-size: 1rem; font-weight: 600;
+          color: var(--accent2);
+          margin-bottom: 1.2rem;
+          display: flex; align-items: center; gap: .5rem;
+        }
+
+        /* Form */
+        .form-row { display: flex; gap: 1rem; flex-wrap: wrap; }
+        .form-group { flex: 1; min-width: 200px; margin-bottom: .8rem; }
+        label { display: block; font-size: .78rem; color: var(--muted); margin-bottom: .4rem; font-weight: 500; letter-spacing: .04em; }
+        input[type="text"], input[type="number"] {
+          width: 100%;
+          padding: .7rem 1rem;
+          background: var(--surface2);
+          border: 1px solid var(--border);
+          border-radius: 8px;
+          color: var(--text);
+          font-family: 'Sora', sans-serif;
+          font-size: .9rem;
+          transition: border-color .2s, box-shadow .2s;
+          outline: none;
+        }
+        input:focus {
+          border-color: var(--accent);
+          box-shadow: 0 0 0 3px rgba(108,138,255,.15);
+        }
+        input::placeholder { color: var(--muted); font-size: .85rem; }
+
+        /* Buttons */
+        .btn-row { display: flex; gap: .7rem; margin-top: .5rem; align-items: center; }
+        button {
+          padding: .65rem 1.4rem;
+          border: none; border-radius: 8px;
+          font-family: 'Sora', sans-serif;
+          font-size: .85rem; font-weight: 600;
+          cursor: pointer;
+          transition: all .2s;
+        }
+        .btn-primary {
+          background: linear-gradient(135deg, var(--accent), var(--accent2));
+          color: #fff;
+        }
+        .btn-primary:hover { opacity: .85; transform: translateY(-1px); }
+        .btn-success {
+          background: var(--success);
+          color: #0d0f14;
+        }
+        .btn-success:hover { opacity: .85; transform: translateY(-1px); }
+        .btn-secondary {
+          background: var(--surface2);
+          color: var(--muted);
+          border: 1px solid var(--border);
+        }
+        .btn-secondary:hover { color: var(--text); border-color: var(--accent); }
+        .btn-sm { padding: .4rem .85rem; font-size: .78rem; border-radius: 6px; }
+        .btn-warning { background: var(--warning); color: #0d0f14; }
+        .btn-danger { background: var(--danger); color: #fff; }
+        .btn-warning:hover, .btn-danger:hover { opacity: .85; }
+
+        /* Table */
+        .table-wrap { overflow-x: auto; }
+        table {
+          width: 100%; border-collapse: collapse;
+          font-size: .875rem;
+        }
+        thead tr {
+          background: var(--surface2);
+          font-size: .75rem; letter-spacing: .06em; text-transform: uppercase;
+          color: var(--muted);
+        }
+        th, td {
+          padding: .85rem 1rem;
+          text-align: left;
+          border-bottom: 1px solid var(--border);
+        }
+        tbody tr { transition: background .15s; }
+        tbody tr:hover { background: rgba(108,138,255,.05); }
+        .badge-id {
+          font-family: 'JetBrains Mono', monospace;
+          font-size: .75rem;
+          background: rgba(108,138,255,.12);
+          color: var(--accent);
+          padding: .2rem .55rem;
+          border-radius: 4px;
+        }
+        td .actions { display: flex; gap: .5rem; }
+
+        /* Toast */
+        #toast {
+          position: fixed; bottom: 2rem; right: 2rem;
+          padding: .9rem 1.4rem;
+          border-radius: 10px;
+          font-size: .85rem; font-weight: 500;
+          box-shadow: 0 8px 30px rgba(0,0,0,.4);
+          transform: translateY(100px); opacity: 0;
+          transition: all .35s cubic-bezier(.34,1.56,.64,1);
+          z-index: 999;
+          max-width: 320px;
+        }
+        #toast.show { transform: translateY(0); opacity: 1; }
+        #toast.success { background: var(--success); color: #0d0f14; }
+        #toast.error { background: var(--danger); color: #fff; }
+        #toast.info { background: var(--accent); color: #fff; }
+
+        /* Empty state */
+        .empty-state {
+          text-align: center; padding: 3rem 1rem;
+          color: var(--muted); font-size: .9rem;
+        }
+        .empty-state .emoji { font-size: 2.5rem; margin-bottom: .5rem; display: block; }
+
+        /* Mode indicator */
+        .mode-tag {
+          display: inline-flex; align-items: center; gap: .4rem;
+          padding: .3rem .8rem; border-radius: 99px;
+          font-size: .75rem; font-weight: 600;
+          margin-left: auto;
+        }
+        .mode-tag.add { background: rgba(52,211,153,.12); color: var(--success); }
+        .mode-tag.edit { background: rgba(251,191,36,.12); color: var(--warning); }
     </style>
 </head>
-<body class="container mt-5">
-<h2 class="mb-4 text-center">Daftar Pengguna</h2>
+<body>
+<div class="container">
 
-<!-- Error Message -->
-<div id="errorAlert" class="error-message">
-    <strong>localhost:8080 menyatakan:</strong> Gagal menambah user.
-    <button type="button" class="btn-close float-end" onclick="this.parentElement.classList.remove('show')"></button>
-</div>
-
-<!-- Form Input -->
-<div class="card mb-4 shadow-sm">
-    <div class="card-header bg-primary text-white">
-        <h5 class="card-title mb-0" id="formTitle">Tambah User Baru</h5>
-    </div>
-    <div class="card-body">
-        <form id="userForm">
-            <input type="hidden" id="userId">
-            <div class="row">
-                <div class="col-md-6 mb-3">
-                    <label class="form-label fw-bold">Nama Lengkap</label>
-                    <input type="text" id="userName" class="form-control"
-                           placeholder="Kesya Utami Putri" maxlength="50" required>
-                </div>
-                <div class="col-md-3 mb-3">
-                    <label class="form-label fw-bold">Umur</label>
-                    <input type="number" id="userAge" class="form-control"
-                           placeholder="20" min="1" max="150" required>
-                </div>
-                <div class="col-md-3 mb-3 d-flex align-items-end">
-                    <button type="submit" id="btnSubmit" class="btn btn-primary me-2">Submit</button>
-                    <button type="button" id="btnCancel" class="btn btn-secondary">Cancel</button>
-                </div>
-            </div>
-        </form>
-    </div>
-</div>
-
-<!-- Tabel User -->
-<div class="card shadow-sm">
-    <div class="card-header bg-secondary text-white">
-        <h5 class="card-title mb-0">Data Pengguna</h5>
-    </div>
-    <div class="card-body">
-        <table class="table table-bordered table-striped table-hover" id="userTable">
-            <thead class="table-dark">
-            <tr>
-                <th width="10%">ID</th>
-                <th width="40%">Nama</th>
-                <th width="20%">Umur</th>
-                <th width="30%">Aksi</th>
-            </tr>
-            </thead>
-            <tbody id="userTableBody">
-            <tr>
-                <td colspan="4" class="text-center text-muted">Belum ada data. Silakan tambah user baru.</td>
-            </tr>
-            </tbody>
-        </table>
-    </div>
-</div>
-
-<!-- Modal Konfirmasi Hapus -->
-<div class="modal fade" id="deleteModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-danger text-white">
-                <h5 class="modal-title">Konfirmasi Hapus</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-            </div>
-            <div class="modal-body">
-                <p>Apakah Anda yakin ingin menghapus user ini?</p>
-                <p class="fw-bold" id="deleteUserName"></p>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Batal</button>
-                <button type="button" class="btn btn-danger" id="confirmDelete">Hapus</button>
-            </div>
+    <!-- Header -->
+    <div class="page-header">
+        <div class="icon">👤</div>
+        <div>
+            <h1>Manajemen User</h1>
+            <p>Praktikum – CRUD tanpa backend</p>
         </div>
     </div>
+
+    <!-- Form Card -->
+    <div class="card">
+        <div class="card-title">
+            <span id="formTitle">✦ Tambah User</span>
+            <span id="modeTag" class="mode-tag add">● Mode Tambah</span>
+        </div>
+        <div class="form-row">
+            <div class="form-group">
+                <label for="userName">Nama Lengkap</label>
+                <input type="text" id="userName" placeholder="Masukkan nama lengkap">
+            </div>
+            <div class="form-group">
+                <label for="userAge">Umur</label>
+                <input type="number" id="userAge" placeholder="Contoh: 20" min="1" max="120">
+            </div>
+        </div>
+        <div class="btn-row">
+            <button id="btnSubmit" class="btn-primary" onclick="handleSubmit()">＋ Simpan Data</button>
+            <button id="btnCancel" class="btn-secondary" style="display:none" onclick="resetForm()">✕ Batal</button>
+        </div>
+    </div>
+
+    <!-- Table Card -->
+    <div class="card">
+        <div class="card-title">📋 Daftar Pengguna <span id="userCount" style="font-size:.75rem;color:var(--muted);font-weight:400;margin-left:.5rem"></span></div>
+        <div class="table-wrap">
+            <table>
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nama</th>
+                    <th>Umur</th>
+                    <th>Aksi</th>
+                </tr>
+                </thead>
+                <tbody id="userTableBody"></tbody>
+            </table>
+        </div>
+        <div id="emptyState" class="empty-state" style="display:none">
+            <span class="emoji">🪹</span>
+            Belum ada data pengguna. Tambahkan dulu!
+        </div>
+    </div>
+
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Toast -->
+<div id="toast"></div>
+
 <script>
-    const apiUrl = '/api/users';
-    let isUpdate = false;
-    let deleteId = null;
+    // ── In-memory "database" ──────────────────────────────────────────
+    let users = [];
+    let nextId = 1;
+    let editingId = null;
 
-    $(document).ready(function() {
-        loadUsers();
-    });
-
-    // Tampilkan error alert
-    function showError(message) {
-        $('#errorAlert').html(`<strong>localhost:8080 menyatakan:</strong> ${message}`)
-                       .addClass('show');
-
-        // Auto hide setelah 5 detik
-        setTimeout(() => {
-            $('#errorAlert').removeClass('show');
-        }, 5000);
+    // ── Toast ──────────────────────────────────────────────────────────
+    function showToast(msg, type = 'info') {
+      const t = document.getElementById('toast');
+      t.textContent = msg;
+      t.className = `show ${type}`;
+      clearTimeout(t._timer);
+      t._timer = setTimeout(() => { t.className = ''; }, 3000);
     }
 
-    // Sembunyikan error alert
-    function hideError() {
-        $('#errorAlert').removeClass('show');
+    // ── Render Table ───────────────────────────────────────────────────
+    function renderTable() {
+      const tbody = document.getElementById('userTableBody');
+      const empty = document.getElementById('emptyState');
+      const count = document.getElementById('userCount');
+
+      if (users.length === 0) {
+        tbody.innerHTML = '';
+        empty.style.display = 'block';
+        count.textContent = '';
+        return;
+      }
+
+      empty.style.display = 'none';
+      count.textContent = `(${users.length} user)`;
+
+      tbody.innerHTML = users.map(u => `
+        <tr>
+          <td><span class="badge-id">#${String(u.id).padStart(3,'0')}</span></td>
+          <td>${escHtml(u.name)}</td>
+          <td>${u.age} thn</td>
+          <td>
+            <div class="actions">
+              <button class="btn-sm btn-warning" onclick="editUser(${u.id})">✎ Edit</button>
+              <button class="btn-sm btn-danger" onclick="deleteUser(${u.id})">✕ Hapus</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
     }
 
-    // Submit form
-    $('#userForm').submit(function(e) {
-        e.preventDefault();
-        hideError();
+    // ── Add / Update ───────────────────────────────────────────────────
+    function handleSubmit() {
+      const name = document.getElementById('userName').value.trim();
+      const age  = parseInt(document.getElementById('userAge').value);
 
-        const name = $('#userName').val().trim();
-        const age = $('#userAge').val();
+      if (!name) { showToast('⚠ Nama tidak boleh kosong!', 'error'); return; }
+      if (!age || age < 1 || age > 120) { showToast('⚠ Umur tidak valid (1–120)!', 'error'); return; }
 
-        if (!name || !age) {
-            showError('Nama dan umur harus diisi!');
-            return;
+      if (editingId !== null) {
+        const idx = users.findIndex(u => u.id === editingId);
+        if (idx > -1) {
+          users[idx].name = name;
+          users[idx].age  = age;
+          showToast('✔ Data berhasil diperbarui!', 'success');
         }
+      } else {
+        users.push({ id: nextId++, name, age });
+        showToast('✔ User berhasil ditambahkan!', 'success');
+      }
 
-        const userData = {
-            name: name,
-            age: parseInt(age)
-        };
-
-        if (isUpdate) {
-            const id = $('#userId').val();
-            updateUser(id, userData);
-        } else {
-            addUser(userData);
-        }
-    });
-
-    // Cancel button
-    $('#btnCancel').click(function() {
-        resetForm();
-    });
-
-    // Load semua user (GET)
-    function loadUsers() {
-        $.ajax({
-            url: apiUrl,
-            type: 'GET',
-            dataType: 'json',
-            timeout: 5000, // 5 detik timeout
-            success: function(response) {
-                let rows = '';
-
-                // Cek struktur response
-                const users = response.data || response || [];
-
-                if (users.length === 0) {
-                    rows = '<tr><td colspan="4" class="text-center text-muted">Belum ada data. Silakan tambah user baru.</td></tr>';
-                } else {
-                    users.forEach(user => {
-                        rows += `
-                            <tr>
-                                <td class="fw-bold">${user.id || '-'}</td>
-                                <td>${user.name || user.nama || '-'}</td>
-                                <td>${user.age || user.umur || '-'}</td>
-                                <td>
-                                    <button class="btn btn-sm btn-warning me-1" onclick="editUser(${user.id}, '${user.name || user.nama}', ${user.age || user.umur})">
-                                        Edit
-                                    </button>
-                                    <button class="btn btn-sm btn-danger" onclick="showDeleteModal(${user.id}, '${user.name || user.nama}')">
-                                        Hapus
-                                    </button>
-                                </td>
-                            </tr>
-                        `;
-                    });
-                }
-
-                $('#userTableBody').html(rows);
-            },
-            error: function(xhr, status, error) {
-                console.error('Error loading users:', error);
-                showError('Gagal memuat data dari server. Pastikan server berjalan.');
-                $('#userTableBody').html('<tr><td colspan="4" class="text-center text-danger">Gagal memuat data</td></tr>');
-            }
-        });
+      resetForm();
+      renderTable();
     }
 
-    // Tambah user (POST)
-    function addUser(data) {
-        $.ajax({
-            url: apiUrl,
-            type: 'POST',
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-            timeout: 5000,
-            success: function(response) {
-                resetForm();
-                loadUsers();
-
-                // Tampilkan pesan sukses
-                alert('✅ User berhasil ditambahkan!');
-            },
-            error: function(xhr, status, error) {
-                console.error('Error adding user:', error);
-
-                let errorMsg = 'Gagal menambah user. ';
-                if (xhr.status === 404) {
-                    errorMsg += 'Endpoint API tidak ditemukan.';
-                } else if (xhr.status === 500) {
-                    errorMsg += 'Terjadi kesalahan di server.';
-                } else {
-                    errorMsg += 'Periksa koneksi ke server.';
-                }
-
-                showError(errorMsg);
-            }
-        });
+    // ── Edit ───────────────────────────────────────────────────────────
+    function editUser(id) {
+      const u = users.find(u => u.id === id);
+      if (!u) return;
+      editingId = id;
+      document.getElementById('userName').value = u.name;
+      document.getElementById('userAge').value  = u.age;
+      document.getElementById('formTitle').textContent = '✎ Edit User';
+      document.getElementById('btnSubmit').textContent = '✔ Update User';
+      document.getElementById('btnSubmit').className = 'btn-success';
+      document.getElementById('btnCancel').style.display = '';
+      const tag = document.getElementById('modeTag');
+      tag.textContent = '● Mode Edit'; tag.className = 'mode-tag edit';
+      window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
-    // Update user (PUT)
-    function updateUser(id, data) {
-        $.ajax({
-            url: `${apiUrl}/${id}`,
-            type: 'PUT',
-            contentType: 'application/json',
-            data: JSON.stringify(data),
-            timeout: 5000,
-            success: function(response) {
-                resetForm();
-                loadUsers();
-                alert('✅ User berhasil diperbarui!');
-            },
-            error: function(xhr, status, error) {
-                console.error('Error updating user:', error);
-                showError('Gagal memperbarui user. Periksa koneksi ke server.');
-            }
-        });
-    }
-
-    // Hapus user (DELETE)
+    // ── Delete ─────────────────────────────────────────────────────────
     function deleteUser(id) {
-        $.ajax({
-            url: `${apiUrl}/${id}`,
-            type: 'DELETE',
-            timeout: 5000,
-            success: function(response) {
-                // Tutup modal
-                bootstrap.Modal.getInstance(document.getElementById('deleteModal')).hide();
-                loadUsers();
-                alert('✅ User berhasil dihapus!');
-            },
-            error: function(xhr, status, error) {
-                console.error('Error deleting user:', error);
-                showError('Gagal menghapus user. Periksa koneksi ke server.');
-            }
-        });
+      if (!confirm('Apakah Anda yakin ingin menghapus user ini?')) return;
+      users = users.filter(u => u.id !== id);
+      renderTable();
+      showToast('🗑 User telah dihapus.', 'info');
     }
 
-    // Tampilkan modal konfirmasi hapus
-    function showDeleteModal(id, name) {
-        deleteId = id;
-        $('#deleteUserName').text(`"${name}" (ID: ${id})`);
-
-        const modal = new bootstrap.Modal(document.getElementById('deleteModal'));
-        modal.show();
-    }
-
-    // Confirm delete button
-    $('#confirmDelete').click(function() {
-        if (deleteId) {
-            deleteUser(deleteId);
-        }
-    });
-
-    // Edit user
-    function editUser(id, name, age) {
-        $('#userId').val(id);
-        $('#userName').val(name);
-        $('#userAge').val(age);
-        $('#formTitle').text('Edit User');
-        $('#btnSubmit').text('Update');
-        isUpdate = true;
-
-        // Scroll ke form
-        $('html, body').animate({
-            scrollTop: $('.card').first().offset().top
-        }, 500);
-    }
-
-    // Reset form ke mode tambah
+    // ── Reset Form ─────────────────────────────────────────────────────
     function resetForm() {
-        $('#userId').val('');
-        $('#userName').val('');
-        $('#userAge').val('');
-        $('#formTitle').text('Tambah User Baru');
-        $('#btnSubmit').text('Submit');
-        isUpdate = false;
-        hideError();
+      editingId = null;
+      document.getElementById('userName').value = '';
+      document.getElementById('userAge').value  = '';
+      document.getElementById('formTitle').textContent = '✦ Tambah User';
+      document.getElementById('btnSubmit').textContent = '＋ Simpan Data';
+      document.getElementById('btnSubmit').className = 'btn-primary';
+      document.getElementById('btnCancel').style.display = 'none';
+      const tag = document.getElementById('modeTag');
+      tag.textContent = '● Mode Tambah'; tag.className = 'mode-tag add';
     }
 
-    // Simulasi data jika backend belum siap
-    // Hapus fungsi ini jika backend sudah siap
-    function useMockData() {
-        // Data contoh
-        const mockUsers = [
-            { id: 1, name: 'Kesya Utami Putri', age: 20 },
-            { id: 2, name: 'Budi Santoso', age: 25 },
-            { id: 3, name: 'Siti Aminah', age: 22 }
-        ];
-
-        let rows = '';
-        mockUsers.forEach(user => {
-            rows += `
-                <tr>
-                    <td class="fw-bold">${user.id}</td>
-                    <td>${user.name}</td>
-                    <td>${user.age}</td>
-                    <td>
-                        <button class="btn btn-sm btn-warning me-1" onclick="editUser(${user.id}, '${user.name}', ${user.age})">Edit</button>
-                        <button class="btn btn-sm btn-danger" onclick="showDeleteModal(${user.id}, '${user.name}')">Hapus</button>
-                    </td>
-                </tr>
-            `;
-        });
-        $('#userTableBody').html(rows);
+    // ── Escape HTML ────────────────────────────────────────────────────
+    function escHtml(s) {
+      return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
     }
 
-    // Uncomment baris di bawah untuk menggunakan data contoh jika backend belum siap
-    // $(document).ready(function() {
-    //     useMockData();
-    // });
+    // ── Init ───────────────────────────────────────────────────────────
+    renderTable();
 </script>
 </body>
 </html>
